@@ -93,14 +93,26 @@ a:hover {
 }
 
 #sidebaropener {
+    width: 40px;
     padding: 40px 10px;
     cursor: pointer;
     z-index: 1;
     opacity: 1;
+    padding-top: 5px;
+    text-align: center;
+}
+
+#sidebaropener > i {
+    color: var(--ligth-color);
+    visibility: hidden;
 }
 
 #sidebaropener:hover {
     background: linear-gradient(90deg, rgb(44, 44, 44) 0%, rgb(0, 0, 0) 10%, rgb(0, 0, 0) 90%, rgb(44, 44, 44) 100%);
+}
+
+#sidebaropener:hover > i {
+    visibility: visible;
 }
 
 #sidebaropener2 {
