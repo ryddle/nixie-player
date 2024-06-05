@@ -233,6 +233,7 @@
             clearInterval(timer);
             timer = null;
 
+            setDigits(hours, (currentTrack<10)?"0"+(currentTrack+1):currentTrack+1);
             playtimer = setInterval(updatePlayTime, 1000);
         } else {
             document.getElementById("audio").pause();
@@ -260,7 +261,7 @@
         var time = document.getElementById("audio").currentTime;
         var parsedTime = secondsToHHMMSSObj(time);
         //document.getElementById("playtime").innerHTML = mins + ":" + secs;
-        setDigits(hours, parsedTime.h);
+        //setDigits(hours, parsedTime.h);
         setDigits(mins, parsedTime.m);
         setDigits(secs, parsedTime.s);
     }
@@ -333,6 +334,11 @@
 
             tracks = [];
             currentTrack = 0;
+
+            document.getElementById("playlistsidebar").innerHTML = "";
+
+            document.getElementById("audio").src = "";
+            document.getElementById("file").value = null;
         } else {
             this.innerHTML = "<i class='fa-solid fa-power-off'></i>";
             this.classList.add("active");
