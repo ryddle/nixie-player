@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>nixie clock</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet">
+    <!-- <link rel="preload" href="fa-solid-900.woff2" as="font" type="font/woff2"> -->
+    <link rel="stylesheet" href="all.min.css">
+    <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+
+    <div id="sidebaropener" class="sidebar" onclick="openSidebar()"></div>
+
+    <div id="sidebar" class="sidebar">
+        <!-- <button onclick="closeSidebar()" style="font-size: 14px;font-family: monospace;position: absolute;right: 10%;top: 4px;height: 20px; width: 20px;">x</button> -->
+        <label for="loopColor" style="font-size: 14px; font-family: monospace; color: white;">Loop Color</label>
+        <input type="checkbox" name="loopColor" id="loopColor" onclick="loopColor()" checked style="font-size: 14px; font-family: monospace;" />
+        <br><br>
+        <input type="color" id="selcolor" value="#ffe548" onchange="changeColor(this.value)">
+
+        <a href="https://github.com/ryddle/nixie-clock" id="github" target="_blank" style="float: right;margin-top: -25px;">
+            <div style="height: 32px;width: 32px;background: black;border-radius: 50%;">
+                <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" data-view-component="true" style="fill: white;">
+                    <path
+                        d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z">
+                    </path>
+                </svg>
+            </div>
+        </a>
+    </div>
+
+
+    <div class="clock">
+        <div class="trapezoid "></div>
+        <section class="hours">
+            <div class="tens">
+                <p>0</p>
+                <p>1</p>
+                <p>2</p>
+                <p>3</p>
+                <p>4</p>
+                <p>5</p>
+                <p>6</p>
+                <p>7</p>
+                <p>8</p>
+                <p>9</p>
+            </div>
+            <div class="ones">
+                <p>0</p>
+                <p>1</p>
+                <p>2</p>
+                <p>3</p>
+                <p>4</p>
+                <p>5</p>
+                <p>6</p>
+                <p>7</p>
+                <p>8</p>
+                <p>9</p>
+            </div>
+        </section>
+        <p class="separator">:</p>
+        <section class="mins">
+            <div class="tens">
+                <p>0</p>
+                <p>1</p>
+                <p>2</p>
+                <p>3</p>
+                <p>4</p>
+                <p>5</p>
+                <p>6</p>
+                <p>7</p>
+                <p>8</p>
+                <p>9</p>
+            </div>
+            <div class="ones">
+                <p>0</p>
+                <p>1</p>
+                <p>2</p>
+                <p>3</p>
+                <p>4</p>
+                <p>5</p>
+                <p>6</p>
+                <p>7</p>
+                <p>8</p>
+                <p>9</p>
+            </div>
+        </section>
+        <p class="separator">:</p>
+        <section class="secs">
+            <div class="tens">
+                <p>0</p>
+                <p>1</p>
+                <p>2</p>
+                <p>3</p>
+                <p>4</p>
+                <p>5</p>
+                <p>6</p>
+                <p>7</p>
+                <p>8</p>
+                <p>9</p>
+            </div>
+            <div class="ones">
+                <p>0</p>
+                <p>1</p>
+                <p>2</p>
+                <p>3</p>
+                <p>4</p>
+                <p>5</p>
+                <p>6</p>
+                <p>7</p>
+                <p>8</p>
+                <p>9</p>
+            </div>
+        </section>
+        <div class="clockbase"></div>
+        <div id="control-buttons" class="control-buttons">
+            <button id="prev" class="control-btn-style"><i class="fa-solid fa-backward-step"></i></button>
+            <button id="play" class="control-btn-style"><i class="fa-solid fa-pause"></i></button>
+            <button id="next" class="control-btn-style"><i class="fa-solid fa-forward-step"></i></button>
+        </div>
+        <button id="openMusic" class="control-btn control-btn-style"><i class="fa-solid fa-eject"></i></button>
+    </div>
+
+    <div id="sidebaropener2" onclick="openPlaylist()">
+        <i class="fa-regular fa-rectangle-list"></i>
+    </div>
+
+    <div id="playlistsidebar" class="playlistsidebar">
+    </div>
+
+    <input type="file" id="file" accept="audio/*" style="display: none;" multiple>
+    <audio id="audio"></audio>
+    <script src="nixie.js"></script>
+</body>
+
+</html>
+<script>
+    function openSidebar() {
+        document.getElementById("sidebaropener").classList.remove("fadeIn");
+        document.getElementById("sidebaropener").classList.add("fadeOut");
+
+        document.getElementById("sidebar").classList.remove("fadeOut");
+        document.getElementById("sidebar").classList.add("fadeIn");
+    }
+
+    function closeSidebar() {
+        document.getElementById("sidebaropener").classList.remove("fadeOut");
+        document.getElementById("sidebaropener").classList.add("fadeIn");
+
+        document.getElementById("sidebar").classList.remove("fadeIn");
+        document.getElementById("sidebar").classList.add("fadeOut");
+    }
+
+    function openPlaylist() {
+        document.getElementById("sidebaropener2").classList.remove("fadeIn");
+        document.getElementById("sidebaropener2").classList.add("fadeOut");
+
+        document.getElementById("playlistsidebar").classList.remove("fadeOut");
+        document.getElementById("playlistsidebar").classList.add("fadeIn");
+    }
+
+    function closePlaylist() {
+        document.getElementById("sidebaropener2").classList.remove("fadeOut");
+        document.getElementById("sidebaropener2").classList.add("fadeIn");
+
+        document.getElementById("playlistsidebar").classList.remove("fadeIn");
+        document.getElementById("playlistsidebar").classList.add("fadeOut");
+    }
+
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest("#sidebaropener") && !event.target.closest("#sidebar")) {
+            closeSidebar();
+        }
+
+        if (!event.target.closest("#sidebaropener2") && !event.target.closest("#playlistsidebar")) {
+            closePlaylist();
+        }
+    });
+
+
+    ////////////////////////////////////////////////////////////////////////////////////
+    var tracks = [];
+    var currentTrack = 0;
+    var playtimer = null;
+    function nextTrack() {
+        currentTrack = (currentTrack + 1) % tracks.length;
+
+        var ol = document.getElementById("playlist");
+        for (var i = 0; i < ol.children.length; i++) {
+            ol.children[i].style.backgroundColor = "transparent";
+            ol.children[i].style.color = "var(--ligth-color)";
+            ol.children[i].children[0].style.color = "var(--ligth-color)";
+        }
+
+        var li = ol.children[currentTrack];
+        li.style.backgroundColor = "var(--ligth-color)";
+        li.style.color = "rgb(var(--accessible-color), var(--accessible-color), var(--accessible-color))";
+        li.children[0].style.color = "rgb(var(--accessible-color), var(--accessible-color), var(--accessible-color))";
+
+        document.getElementById("audio").src = tracks[currentTrack];
+        document.getElementById("audio").load();
+
+        togglePlay();
+    }
+
+    function prevTrack() {
+        currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+
+        var ol = document.getElementById("playlist");
+        for (var i = 0; i < ol.children.length; i++) {
+            ol.children[i].style.backgroundColor = "transparent";
+            ol.children[i].style.color = "var(--ligth-color)";
+            ol.children[i].children[0].style.color = "var(--ligth-color)";
+        }
+
+        var li = ol.children[currentTrack];
+        li.style.backgroundColor = "var(--ligth-color)";
+        li.style.color = "rgb(var(--accessible-color), var(--accessible-color), var(--accessible-color))";
+        li.children[0].style.color = "rgb(var(--accessible-color), var(--accessible-color), var(--accessible-color))";
+
+        document.getElementById("audio").src = tracks[currentTrack];
+        document.getElementById("audio").load();
+
+        togglePlay();
+    }
+
+    function togglePlay() {
+        if (document.getElementById("audio").paused) {
+            document.getElementById("audio").play();
+            document.getElementById("play").innerHTML = "<i class='fa-solid fa-pause'></i>";
+
+            clearInterval(timer);
+            timer = null;
+
+            playtimer = setInterval(updatePlayTime, 1000);
+        } else {
+            document.getElementById("audio").pause();
+            document.getElementById("play").innerHTML = "<i class='fa-solid fa-play'></i>";
+
+            clearInterval(playtimer);
+            playtimer = null;
+
+            timer = setInterval(tick, 1000);
+        }
+    }
+
+    const secondsToHHMMSSObj = function (sec_num) {
+        var hours = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60) % 60;
+        var seconds = Math.round(sec_num - (hours * 3600) - (minutes * 60)) % 60;
+        var h = "00", m = "00", s = "00";
+        if (hours < 10) { h = "0" + hours; } else { h = hours + ""; }
+        if (minutes < 10) { m = "0" + minutes; } else { m = minutes + ""; }
+        if (seconds < 10) { s = "0" + seconds; } else { s = seconds + ""; }
+        return { h: h, m: m, s: s };
+    }
+
+    function updatePlayTime() {
+        var time = document.getElementById("audio").currentTime;
+        var parsedTime = secondsToHHMMSSObj(time);
+        //document.getElementById("playtime").innerHTML = mins + ":" + secs;
+        setDigits(hours, parsedTime.h);
+        setDigits(mins, parsedTime.m);
+        setDigits(secs, parsedTime.s);
+    }
+
+    function createPlaylist(files) {
+        var ol = document.createElement("ol");
+        ol.id = "playlist";
+        ol.className = "playlist";
+        for (var i = 0; i < files.length; i++) {
+            var li = document.createElement("li");
+            li.className = "track";
+            var a = document.createElement("a");
+            a.href = "#";
+            a.className = "tracklink";
+            a.index = i;
+            a.addEventListener("click", function () {
+                currentTrack = this.index;
+
+                for (var i = 0; i < ol.children.length; i++) {
+                    ol.children[i].style.backgroundColor = "transparent";
+                    ol.children[i].style.color = "var(--ligth-color)";
+                    ol.children[i].children[0].style.color = "var(--ligth-color)";
+                }
+
+                this.parentElement.style.backgroundColor = "var(--ligth-color)";
+                this.parentElement.style.color = "rgb(var(--accessible-color), var(--accessible-color), var(--accessible-color))";
+                this.style.color = "rgb(var(--accessible-color), var(--accessible-color), var(--accessible-color))";
+                document.getElementById("audio").src = tracks[currentTrack];
+                document.getElementById("audio").load();
+                togglePlay();
+            });
+            a.innerHTML = files[i].name;
+
+            if (i == 0) {
+                li.style.backgroundColor = "var(--ligth-color)";
+                li.style.color = "rgb(var(--accessible-color), var(--accessible-color), var(--accessible-color))";
+                a.style.color = "rgb(var(--accessible-color), var(--accessible-color), var(--accessible-color))";
+            }
+
+            li.appendChild(a);
+            ol.appendChild(li);
+        }
+
+        document.getElementById("playlistsidebar").appendChild(ol);
+    }
+
+    document.getElementById("next").addEventListener("click", nextTrack);
+    document.getElementById("prev").addEventListener("click", prevTrack);
+    document.getElementById("play").addEventListener("click", togglePlay);
+
+    document.getElementById("audio").addEventListener("ended", nextTrack);
+
+
+
+    document.getElementById("openMusic").addEventListener("click", function () {
+        if (this.classList.contains("active")) {
+            document.getElementById("audio").pause();
+            document.getElementById("audio").currentTime = 0;
+            this.classList.remove("active");
+            this.innerHTML = "<i class='fa-solid fa-eject'></i>";
+            document.getElementById("control-buttons").querySelectorAll("button").forEach(function (button) {
+                button.classList.remove("active");
+            });
+            document.getElementById("control-buttons").style.display = "none";
+
+            clearInterval(playtimer);
+            playtimer = null;
+
+            timer = setInterval(tick, 1000);
+
+            tracks = [];
+            currentTrack = 0;
+        } else {
+            this.innerHTML = "<i class='fa-solid fa-power-off'></i>";
+            this.classList.add("active");
+            document.getElementById("file").click();
+        }
+    });
+
+    document.getElementById("file").addEventListener("input", function () {
+        if (this.files && this.files[0]) {
+            for (let i = 0; i < this.files.length; i++) {
+                tracks.push(URL.createObjectURL(this.files[i]));
+            }
+
+            document.getElementById("audio").src = tracks[currentTrack];
+            document.getElementById("audio").load();
+
+            togglePlay();
+
+            createPlaylist(this.files);
+
+            document.getElementById("control-buttons").querySelectorAll("button").forEach(function (button) {
+                button.classList.add("active");
+            });
+            document.getElementById("control-buttons").style.display = "block";
+        } else {
+            document.getElementById("control-buttons").querySelectorAll("button").forEach(function (button) {
+                button.classList.remove("active");
+            });
+            document.getElementById("control-buttons").style.display = "none";
+        }
+    });
+
+</script>
