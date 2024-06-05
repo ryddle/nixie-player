@@ -330,8 +330,6 @@
             clearInterval(playtimer);
             playtimer = null;
 
-            timer = setInterval(tick, 1000);
-
             tracks = [];
             currentTrack = 0;
 
@@ -339,6 +337,8 @@
 
             document.getElementById("audio").src = "";
             document.getElementById("file").value = null;
+
+            timer = setInterval(tick, 1000);
         } else {
             this.innerHTML = "<i class='fa-solid fa-power-off'></i>";
             this.classList.add("active");
