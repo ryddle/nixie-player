@@ -33,10 +33,6 @@ function tick() {
     setDigits(secs, time.secs);
 }
 
-tick();
-
-timer = setInterval(tick, 1000);
-
 var isLoopColor = false
 var loopColorInterval = 0;
 var hue = 0;

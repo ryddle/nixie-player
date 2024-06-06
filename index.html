@@ -114,6 +114,7 @@
             </div>
         </section>
         <div class="clockbase"></div>
+        <button id="timeMode" class="control-btn control-btn-style active" style="left: 50px; visibility: hidden;" state="0"><i class="fa-solid fa-clock-rotate-left fa-flip-horizontal"></i></button><!-- <i class="fa-regular fa-clock"></i>  <i class="fa-solid fa-clock-rotate-left fa-flip-horizontal"></i>  <i class="fa-solid fa-clock-rotate-left"></i>  -->
         <div id="control-buttons" class="control-buttons">
             <button id="prev" class="control-btn-style"><i class="fa-solid fa-backward-step"></i></button>
             <button id="play" class="control-btn-style"><i class="fa-solid fa-pause"></i></button>
@@ -182,7 +183,7 @@
     ////////////////////////////////////////////////////////////////////////////////////
     var tracks = [];
     var currentTrack = 0;
-    var playtimer = null;
+    var baseTimer = null;
     function nextTrack() {
         currentTrack = (currentTrack + 1) % tracks.length;
 
@@ -230,19 +231,10 @@
             document.getElementById("audio").play();
             document.getElementById("play").innerHTML = "<i class='fa-solid fa-pause'></i>";
 
-            clearInterval(timer);
-            timer = null;
-
             setDigits(hours, (currentTrack<10)?"0"+(currentTrack+1):currentTrack+1);
-            playtimer = setInterval(updatePlayTime, 1000);
         } else {
             document.getElementById("audio").pause();
             document.getElementById("play").innerHTML = "<i class='fa-solid fa-play'></i>";
-
-            clearInterval(playtimer);
-            playtimer = null;
-
-            timer = setInterval(tick, 1000);
         }
     }
 
@@ -257,13 +249,40 @@
         return { h: h, m: m, s: s };
     }
 
+    function updateDisplay() {
+        if(timeMode == 0){
+            tick();
+        }else {
+            updatePlayTime();
+        }
+    }
+
     function updatePlayTime() {
-        var time = document.getElementById("audio").currentTime;
+        var currentTime = document.getElementById("audio").currentTime;
+        var duration = document.getElementById("audio").duration;
+        var time = (timeMode == 1) ? currentTime : duration-currentTime;
         var parsedTime = secondsToHHMMSSObj(time);
-        //document.getElementById("playtime").innerHTML = mins + ":" + secs;
-        //setDigits(hours, parsedTime.h);
+
+        setDigits(hours, (currentTrack<10)?"0"+(currentTrack+1):currentTrack+1);
         setDigits(mins, parsedTime.m);
         setDigits(secs, parsedTime.s);
+    }
+
+    var timeMode = 0;
+    function toggleTimeMode() {
+        var btn = document.getElementById("timeMode");
+        if (btn.getAttribute("state") == 0) {
+            btn.setAttribute("state", 1);
+            btn.innerHTML = "<i class='fa-solid fa-clock-rotate-left'></i>";            
+        } else if (btn.getAttribute("state") == 1) {
+            btn.setAttribute("state", 2);
+            btn.innerHTML = "<i class='fa-regular fa-clock'></i>";
+        } else {
+            btn.setAttribute("state", 0);
+            btn.innerHTML = "<i class='fa-solid fa-clock-rotate-left fa-flip-horizontal'></i>";
+        }
+        timeMode = btn.getAttribute("state");
+        updateDisplay();
     }
 
     function createPlaylist(files) {
@@ -308,6 +327,8 @@
         document.getElementById("playlistsidebar").appendChild(ol);
     }
 
+    document.getElementById("timeMode").addEventListener("click", toggleTimeMode);
+
     document.getElementById("next").addEventListener("click", nextTrack);
     document.getElementById("prev").addEventListener("click", prevTrack);
     document.getElementById("play").addEventListener("click", togglePlay);
@@ -322,23 +343,23 @@
             document.getElementById("audio").currentTime = 0;
             this.classList.remove("active");
             this.innerHTML = "<i class='fa-solid fa-eject'></i>";
+
             document.getElementById("control-buttons").querySelectorAll("button").forEach(function (button) {
                 button.classList.remove("active");
             });
             document.getElementById("control-buttons").style.display = "none";
-
-            clearInterval(playtimer);
-            playtimer = null;
+            document.getElementById("timeMode").style.visibility = "hidden";
 
             tracks = [];
             currentTrack = 0;
+
+            timeMode = 0;
 
             document.getElementById("playlistsidebar").innerHTML = "";
 
             document.getElementById("audio").src = "";
             document.getElementById("file").value = null;
 
-            timer = setInterval(tick, 1000);
         } else {
             this.innerHTML = "<i class='fa-solid fa-power-off'></i>";
             this.classList.add("active");
@@ -355,6 +376,10 @@
             document.getElementById("audio").src = tracks[currentTrack];
             document.getElementById("audio").load();
 
+            timeMode = 1;
+
+            document.getElementById("timeMode").setAttribute("state", 1);
+
             togglePlay();
 
             createPlaylist(this.files);
@@ -363,6 +388,7 @@
                 button.classList.add("active");
             });
             document.getElementById("control-buttons").style.display = "block";
+            document.getElementById("timeMode").style.visibility = "visible";
         } else {
             document.getElementById("control-buttons").querySelectorAll("button").forEach(function (button) {
                 button.classList.remove("active");
@@ -370,5 +396,7 @@
             document.getElementById("control-buttons").style.display = "none";
         }
     });
+
+    baseTimer = setInterval(updateDisplay, 1000);
 
 </script>
